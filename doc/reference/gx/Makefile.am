@@ -45,7 +45,7 @@ FIXXREF_OPTIONS=\
 # e.g. HFILE_GLOB=$(top_srcdir)/gtk/*.h
 # e.g. CFILE_GLOB=$(top_srcdir)/gtk/*.c
 HFILE_GLOB=$(top_srcdir)/gx/*.h
-CFILE_GLOB=$(top_srcdir)/gx/ $(top_srcdir)/tools/gx-gen.c
+CFILE_GLOB=$(top_srcdir)/gx/*.c $(top_srcdir)/tools/gx-gen.c
 
 # Header files to ignore when scanning.
 # e.g. IGNORE_HFILES=gtkdebug.h gtkintl.h
