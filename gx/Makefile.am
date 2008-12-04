@@ -57,21 +57,23 @@ endif
 # Generate this list via:
 # find ./ -iname 'gx-*-gen.*' |cut -d'/' -f2|xargs printf '\t%s \\\n'
 GENERATED_CODE = \
-        gx-window-gen.c \
-        gx-protocol-error-codes-gen.h \
-        gx-gcontext-gen.c \
         gx-xcb-dependencies-gen.h \
-        gx-connection-gen.c \
+        gx-protocol-error-codes-gen.h \
         gx-protocol-error-details-gen.h \
-        gx-pixmap-gen.c \
+        gx-event-codes-gen.h \
+        gx-event-details-gen.h \
+        gx-connection-gen.c \
         gx-connection-gen.h \
-        gx-drawable-gen.c \
-        gx-pixmap-gen.h \
-        gx-drawable-gen.h \
-        gx-window-gen.h \
+        gx-gcontext-gen.c \
         gx-gcontext-gen.h \
-        gx-tests-gen.c \
-        gx-cookie-gen.h
+        gx-drawable-gen.c \
+        gx-drawable-gen.h \
+        gx-pixmap-gen.c \
+        gx-pixmap-gen.h \
+        gx-window-gen.c \
+        gx-window-gen.h \
+        gx-cookie-gen.h \
+        gx-tests-gen.c
 
 $(GENERATED_CODE): $(EXTENSION_XML) $(top_builddir)/tools/gx-gen
 	echo "generating $@"
@@ -107,7 +109,9 @@ libgx_@GX_MAJOR_VERSION@_@GX_MINOR_VERSION@_la_SOURCES = \
 	gx-cookie.c \
 	gx-cookie.h \
 	gx-protocol-error.c \
-	gx-protocol-error.h
+	gx-protocol-error.h \
+	gx-event.c \
+	gx-event.h
 
 #libgx_@GX_MAJOR_VERSION@_@GX_MINOR_VERSION@_la_LDADD =
 libgx_@GX_MAJOR_VERSION@_@GX_MINOR_VERSION@_la_LDFLAGS = \
@@ -152,7 +156,4 @@ gxinternalinclude_HEADERS = \
 	gx-screen.h \
 	gx-gcontext.h \
 	gx-gcontext-gen.h
-
-$(EXTENSION_XML):
-	$(LN_S) -f $(XCBPROTO_XCBINCLUDEDIR)/$@ $@
 
