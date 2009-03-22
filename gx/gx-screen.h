@@ -43,7 +43,10 @@ typedef struct _GXWindow            GXWindow;
 #define GX_IS_SCREEN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GX_TYPE_SCREEN))
 #define GX_SCREEN_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GX_TYPE_SCREEN, GXScreenClass))
 
+#ifndef GX_SCREEN_TYPEDEF
 typedef struct _GXScreen	GXScreen;
+#define GX_SCREEN_TYPEDEF
+#endif
 typedef struct _GXScreenClass	GXScreenClass;
 typedef struct _GXScreenPrivate GXScreenPrivate;
 
@@ -72,9 +75,9 @@ GType gx_screen_get_type(void);
 /* add additional methods here */
 GXScreen *gx_screen_new(void);
 
-GXWindow *gx_screen_get_root_window (GXScreen *self);
+GXWindow *gx_screen_get_root (GXScreen *self);
 guint gx_screen_get_number (GXScreen *self);
-GXWindow *gx_screen_get_root_window (GXScreen *self);
+GXWindow *gx_screen_get_root (GXScreen *self);
 guint32 gx_screen_get_black_pixel (GXScreen *self);
 guint32 gx_screen_get_white_pixel (GXScreen *self);
 guint16 gx_screen_get_width (GXScreen *self);

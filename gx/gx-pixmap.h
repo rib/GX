@@ -31,7 +31,7 @@
 #include <glib-object.h>
 #include <glib.h>
 
-#include <gx/gx-xcb-dependencies-gen.h>
+#include <gx/generated-code/gx-xcb-dependencies-gen.h>
 
 G_BEGIN_DECLS
 
@@ -74,6 +74,8 @@ GType gx_pixmap_get_type(void);
 
 /* add additional methods here */
 GXPixmap *gx_pixmap_new(void);
+
+GXConnection *gx_pixmap_get_connection (GXPixmap *self);
 
 G_END_DECLS
 

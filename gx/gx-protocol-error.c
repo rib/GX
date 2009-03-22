@@ -4,17 +4,7 @@
 #include <glib.h>
 
 
-typedef struct {
-    int		protocol_error_code;
-    const char *description;
-} GXProtocolErrorDetails;
-
-static GXProtocolErrorDetails
-gx_protocol_errors[] =
-{
-#include "gx-protocol-error-details-gen.h"
-    {0, NULL}
-};
+static GHashTable *protocol_error_details_hash = NULL;
 
 GQuark
 gx_protocol_error_quark (void)
@@ -25,29 +15,65 @@ gx_protocol_error_quark (void)
 const char *
 gx_protocol_error_get_description (GXProtocolError code)
 {
-  int i;
+  GXProtocolErrorDetails *details;
 
-  if (code < GX_PROTOCOL_ERROR_LAST)
-    return gx_protocol_errors[i].description;
+  if (!protocol_error_details_hash)
+    return "Unknown error";
+
+  details = g_hash_table_lookup (protocol_error_details_hash,
+				 &code);
+  if (details)
+    return details->description;
   else
     return "Unknown error";
 }
 
-GXProtocolError
-gx_protocol_error_from_xcb_generic_error (xcb_generic_error_t *error)
+void
+gx_protocol_error_details_add_extension (
+		      GXProtocolErrorDetails *extension_error_details)
 {
-  int i;
+  GXProtocolErrorDetails *details;
+  static		  guint gx_protocol_error = 1;
 
-  for (i = 0; i < GX_PROTOCOL_ERROR_LAST; i++)
+  if (!protocol_error_details_hash)
+    protocol_error_details_hash = g_hash_table_new (g_int_hash, g_int_equal);
+
+  for (details = extension_error_details;
+       details->description != NULL;
+       details++)
     {
-      if (gx_protocol_errors[i].protocol_error_code == error->error_code)
-	return i;
+      details->gx_protocol_error = gx_protocol_error++;
+      g_hash_table_insert (protocol_error_details_hash,
+			   &details->protocol_error_code,
+			   details);
     }
-  g_warning ("Can't translate unknown error code (%d) into a GXProtocolError",
-	     error->error_code);
+}
 
-  /* FIXME - we should probably choose a specific default when the error code
-   * is unknown */
-  return 0;
+void
+_gx_protocol_error_details_hash_free (void)
+{
+  if (protocol_error_details_hash)
+    {
+      g_hash_table_unref (protocol_error_details_hash);
+      protocol_error_details_hash = NULL;
+    }
+}
+
+/* FIXME - we should probably choose a specific default when the error code
+ * is unknown */
+GXProtocolError
+gx_protocol_error_from_xcb_error (xcb_generic_error_t *error)
+{
+  GXProtocolErrorDetails *details;
+
+  if (!protocol_error_details_hash)
+    return 0;
+
+  details = g_hash_table_lookup (protocol_error_details_hash,
+				 &error->error_code);
+  if (details)
+    return details->gx_protocol_error;
+  else
+    return 0;
 }
 

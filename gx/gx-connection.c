@@ -24,11 +24,13 @@
 
 #include <gx/gx-connection.h>
 #include <gx/gx-cookie.h>
+#include <gx/gx-screen.h>
 #include <gx/gx-drawable.h>
 #include <gx/gx-window.h>
 #include <gx/gx-types.h>
 #include <gx/gx-mask-value-item.h>
 #include <gx/gx-protocol-error.h>
+#include <gx/gx-event.h>
 
 #include <glib.h>
 
@@ -37,7 +39,9 @@
 #include <string.h>
 
 #define GX_CONNECTION_GET_PRIVATE(object) \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((object), GX_TYPE_CONNECTION, GXConnectionPrivate))
+  (G_TYPE_INSTANCE_GET_PRIVATE ((object), \
+   GX_TYPE_CONNECTION, \
+   GXConnectionPrivate))
 
 enum {
     EVENT_SIGNAL,
@@ -174,14 +178,14 @@ gx_connection_class_init (GXConnectionClass *klass)
   gx_connection_signals[EVENT_SIGNAL] =
     g_signal_new ("event", /* name */
 		  G_TYPE_FROM_CLASS (klass), /* interface GType */
-		  G_SIGNAL_RUN_LAST, /* signal flags */
+		  G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED, /* signal flags */
 		  G_STRUCT_OFFSET (GXConnectionClass, event),
 		  NULL, /* accumulator */
 		  NULL,	/* accumulator data */
 		  g_cclosure_marshal_VOID__POINTER, /* c marshaller */
 		  G_TYPE_NONE,	/* return type */
-		  0 /* number of parameters */
-		  /* vararg, list of param types */
+		  1, /* number of parameters */
+		  G_TYPE_POINTER /* vararg, list of param types */
     );
 #if 0
   klass->reply = NULL;
@@ -270,6 +274,8 @@ gx_connection_init (GXConnection *self)
   self->priv->response_queue = g_queue_new ();
   self->priv->pending_reply_cookies = g_queue_new ();
   self->priv->zombie_reply_cookies = g_queue_new ();
+
+  //self->priv->event_info = g_hash_table_new (g_int_hash, g_int_equal);
 }
 
 GXConnection *
@@ -534,16 +540,33 @@ xcb_event_check (GSource *source)
 }
 
 static void
-signal_event (GXConnection *connection, xcb_generic_event_t *event)
+signal_event (GXConnection *connection, xcb_generic_event_t *xcb_event)
 {
-  g_print ("event\n");
+  GXGenericEvent *event;
+  guint32 window_xid;
+  static guint window_event_signal_id = 0;
+  GQuark event_detail;
 
-  /* FIXME - we should be able to determine the event window of an
-   * event and also send a signal from the corresponding GXWindow. */
+  event = gx_event_from_xcb_event (xcb_event);
+  event_detail = g_quark_from_string (gx_event_get_name (event));
+#warning "FIXME: avoid g_quark_from_string when emitting events!"
 
-  /* TODO: we should use the name of the signal as the detail */
-  g_signal_emit (connection, gx_connection_signals[EVENT_SIGNAL], 0, event);
+  g_signal_emit (connection, gx_connection_signals[EVENT_SIGNAL],
+		 event_detail, event);
 
+  window_xid = gx_event_get_window_xid (event);
+  if (window_xid)
+    {
+      GXWindow *window = gx_window_find_from_xid (window_xid);
+      if (window)
+	{
+	  if (!window_event_signal_id)
+	    window_event_signal_id = g_signal_lookup ("event", GX_TYPE_WINDOW);
+	  g_signal_emit (window, window_event_signal_id,
+			 event_detail, event);
+	  g_object_unref (window);
+	}
+    }
 }
 
 static void
@@ -840,12 +863,25 @@ gx_connection_unregister_cookie (GXConnection *self, GXCookie *cookie)
   g_object_unref (cookie);
 }
 
+/**
+ * gx_connection_get_default_screen:
+ * self: A connection object
+ *
+ * Returns a new reference to the default screen object.
+ */
 GXScreen *
 gx_connection_get_default_screen (GXConnection *self)
 {
   return g_object_ref (self->priv->default_screen);
 }
 
+/**
+ * gx_connection_get_screens:
+ * self: A connection object
+ *
+ * Returns a GList of all the screens available. Note you must unref
+ * all the entries in the list when finished, and free the list.
+ */
 GList *
 gx_connection_get_screens (GXConnection *self)
 {
@@ -853,5 +889,19 @@ gx_connection_get_screens (GXConnection *self)
   return g_list_copy (self->priv->screens);
 }
 
-#include "gx-connection-gen.c"
+/**
+ * gx_connection_get_default_root:
+ * self: A connection object
+ *
+ * Returns a new reference to the root window of the default screen
+ */
+GXWindow *
+gx_connection_get_default_root (GXConnection *self)
+{
+  GXScreen *screen = gx_connection_get_default_screen(self);
+  GXWindow *root = gx_screen_get_root (screen);
+  g_object_unref (screen);
+  return g_object_ref (root);
+}
+
 

@@ -24,6 +24,7 @@
  *
  */
 
+#include <gx/gx-connection.h>
 #include <gx/gx-gcontext.h>
 
 #include <string.h>
@@ -38,16 +39,16 @@ enum {
 };
 #endif
 
-#if 0
 enum {
     PROP_0,
-    PROP_NAME,
+    PROP_CONNECTION,
+    PROP_XID
 };
-#endif
 
 struct _GXGContextPrivate
 {
-    xcb_gcontext_t  xcb_gcontext;
+  GXConnection	 *connection;
+  guint32	  xid;
 };
 
 static void gx_gcontext_get_property(GObject *object,
@@ -74,7 +75,7 @@ static void
 gx_gcontext_class_init(GXGContextClass *klass) /* Class Initialization */
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
-  /* GParamSpec *new_param;*/
+  GParamSpec *new_param;
 
   parent_class = g_type_class_peek_parent(klass);
 
@@ -83,38 +84,26 @@ gx_gcontext_class_init(GXGContextClass *klass) /* Class Initialization */
   gobject_class->get_property = gx_gcontext_get_property;
   gobject_class->set_property = gx_gcontext_set_property;
 
-  /* set up properties */
-#if 0
-  //new_param = g_param_spec_int("name", /* name */
-  //new_param = g_param_spec_uint("name", /* name */
-  //new_param = g_param_spec_boolean("name", /* name */
-  //new_param = g_param_spec_object("name", /* name */
-  new_param = g_param_spec_pointer("name", /* name */
-				   "Name", /* nick name */
-				   "Name", /* description */
-#if INT/UINT/CHAR/LONG/FLOAT...
-				   10, /* minimum */
-				   100, /* maximum */
-				   0, /* default */
-#elif BOOLEAN
-				   FALSE, /* default */
-#elif STRING
-				   NULL, /* default */
-#elif OBJECT
-				   MY_TYPE_PARAM_OBJ, /* GType */
-#elif POINTER
-				   /* nothing extra */
-#endif
-				   MY_PARAM_READABLE /* flags */
-				   MY_PARAM_WRITEABLE /* flags */
-				   MY_PARAM_READWRITE /* flags */
-				   | G_PARAM_CONSTRUCT
-				   | G_PARAM_CONSTRUCT_ONLY
-				   );
-  g_object_class_install_property(gobject_class,
-				  PROP_NAME,
-				  new_param);
-#endif
+  new_param = g_param_spec_object("connection", /* name */
+				  "Connection",	/* nick name */
+				  "Connection",	/* description */
+				  GX_TYPE_CONNECTION,	/* GType */
+				  G_PARAM_READABLE	/* flags */
+				  | G_PARAM_WRITABLE	/* flags */
+				  | G_PARAM_CONSTRUCT_ONLY);
+  g_object_class_install_property (gobject_class, PROP_CONNECTION, new_param);
+
+  new_param = g_param_spec_uint("xid", /* name */
+			       "XID",	/* nick name */
+			       "XID to send when creating a window",
+			       0,	/* minimum */
+			       G_MAXUINT32,	/* maximum */
+			       0,	/* default */
+			       G_PARAM_WRITABLE
+			       | G_PARAM_READABLE
+			       | G_PARAM_CONSTRUCT_ONLY);
+  g_object_class_install_property (gobject_class, PROP_XID, new_param);
+
 
   /* set up signals */
 #if 0 /* template code */
@@ -142,7 +131,7 @@ gx_gcontext_get_property(GObject *object,
 		       GValue *value,
 		       GParamSpec *pspec)
 {
-  /* GXGContext* self = GX_GCONTEXT(object); */
+  GXGContext* self = GX_GCONTEXT(object);
 
   switch(id)
     {
@@ -151,6 +140,12 @@ gx_gcontext_get_property(GObject *object,
       g_value_set_int(value, self->priv->property);
       break;
 #endif
+    case PROP_CONNECTION:
+      g_value_set_object (value, self->priv->connection);
+      break;
+    case PROP_XID:
+      g_value_set_uint (value, self->priv->xid);
+      break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID(object, id, pspec);
       break;
@@ -163,7 +158,7 @@ gx_gcontext_set_property(GObject *object,
 		       const GValue *value,
 		       GParamSpec *pspec)
 {
-  /* GXGContext* self = GX_GCONTEXT(object); */
+  GXGContext* self = GX_GCONTEXT(object);
 
   switch(property_id)
     {
@@ -172,6 +167,12 @@ gx_gcontext_set_property(GObject *object,
       gx_gcontext_set_property(self, g_value_get_int(value));
       break;
 #endif
+    case PROP_CONNECTION:
+      self->priv->connection = g_value_get_object (value);
+      break;
+    case PROP_XID:
+      self->priv->xid = g_value_get_uint (value);
+      break;
     default:
       g_warning("gx_gcontext_set_property on unknown property");
       return;
@@ -193,7 +194,7 @@ gx_gcontext_mydoable_interface_init(gpointer interface,
 
 /* Instance Construction */
 static void
-gx_gcontext_init(GXGContext *self)
+gx_gcontext_init (GXGContext *self)
 {
   self->priv = GX_GCONTEXT_GET_PRIVATE(self);
   /* populate your object here */
@@ -201,14 +202,16 @@ gx_gcontext_init(GXGContext *self)
 
 /* Instantiation wrapper */
 GXGContext*
-gx_gcontext_new(void)
+gx_gcontext_new (GXConnection *connection)
 {
-  return GX_GCONTEXT(g_object_new(gx_gcontext_get_type(), NULL));
+  return GX_GCONTEXT (g_object_new (GX_TYPE_GCONTEXT,
+				    "connection", connection,
+				    NULL));
 }
 
 /* Instance Destruction */
 void
-gx_gcontext_finalize(GObject *object)
+gx_gcontext_finalize (GObject *object)
 {
   /* GXGContext *self = GX_GCONTEXT(object); */
 
@@ -216,9 +219,15 @@ gx_gcontext_finalize(GObject *object)
   G_OBJECT_CLASS(parent_class)->finalize(object);
 }
 
-xcb_gcontext_t
-gx_gcontext_get_xcb_gcontext (GXGContext *self)
+GXConnection *
+gx_gcontext_get_connection (GXGContext *self)
 {
-    return self->priv->xcb_gcontext;
+  return g_object_ref (self->priv->connection);
+}
+
+guint32
+gx_gcontext_get_xid (GXGContext *self)
+{
+    return self->priv->xid;
 }
 

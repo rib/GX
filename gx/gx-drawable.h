@@ -27,14 +27,16 @@
 #ifndef GX_DRAWABLE_H
 #define GX_DRAWABLE_H
 
-#include <gx/gx-connection.h>
-#include <gx/gx-gcontext.h>
+//#include <gx/gx-connection.h>
+//#include <gx/gx-gcontext.h>
 #include <gx/gx-types.h>
+
+#include <gx/generated-code/gx-xcb-dependencies-gen.h>
+#include <gx/generated-code/extensions/gx-xproto.h>
 
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gx/gx-xcb-dependencies-gen.h>
 
 G_BEGIN_DECLS
 #define GX_DRAWABLE(obj)		  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GX_TYPE_DRAWABLE, GXDrawable))
@@ -58,7 +60,7 @@ struct _GXDrawable
   GObject parent;
 
   /* add pointers to new members here */
-
+#warning "make drawable::xid private!!"
   guint32 xid;
 
   /*< private > */
@@ -81,8 +83,7 @@ GXDrawable *gx_drawable_new (void);
 
 guint32 gx_drawable_get_xid (GXDrawable * self);
 
-/* TODO - split this into seperate files */
-#include <gx/gx-drawable-gen.h>
+GXConnection *gx_drawable_get_connection (GXDrawable *self);
 
 G_END_DECLS
 #endif /* GX_DRAWABLE_H */

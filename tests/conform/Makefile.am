@@ -20,7 +20,7 @@ test_gx_SOURCES = \
 wrappers: test-gx
 	for i in `./test-gx -l`; \
 	do \
-		ln -sf $(top_srcdir)/tests/wrapper.sh "`basename $$i`_wrap.sh"; \
+		ln -sf $(top_srcdir)/tests/conform/wrapper.sh "`basename $$i`_wrap.sh"; \
 	done
 # NB: BUILT_SOURCES here a misnomer. We aren't building source, just inserting
 # a phony rule that will generate symlink scripts for running individual tests

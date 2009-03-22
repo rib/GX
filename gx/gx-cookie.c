@@ -446,13 +446,13 @@ gx_cookie_set_error (GXCookie *self, xcb_generic_error_t *error)
 }
 
 /**
- * gx_cookie_get_reply:
+ * gx_cookie_get_error:
  * @self: a cookie
  *
  * If an error has been recieved for this cookie then a pointer to the
- * corresponding xcb_*reply_t is returned, else NULL.
+ * corresponding GXGenericProtocolError * is returned, else NULL.
  */
-GXGenericError *
+GXGenericProtocolError *
 gx_cookie_get_error (GXCookie *self)
 {
   return self->priv->error;

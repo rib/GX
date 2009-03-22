@@ -3,24 +3,26 @@
 
 #include <glib.h>
 
-#include <gx/gx-xcb-dependencies-gen.h>
+#include <gx/generated-code/gx-xcb-dependencies-gen.h>
 
 #define GX_PROTOCOL_ERROR gx_protocol_error_quark ()
 
 GQuark gx_protocol_error_quark (void);
 
-typedef enum {
+typedef	int GXProtocolError;
 
-#include "gx-protocol-error-codes-gen.h"
+typedef struct {
+    int		     protocol_error_code;
+    GXProtocolError  gx_protocol_error;
+    const char	    *description;
+} GXProtocolErrorDetails;
 
-    GX_PROTOCOL_ERROR_LAST
-} GXProtocolError;
 
 const char *
 gx_protocol_error_get_description (GXProtocolError code);
 
 GXProtocolError
-gx_protocol_error_from_xcb_generic_error (xcb_generic_error_t *error);
+gx_protocol_error_from_xcb_error (xcb_generic_error_t *error);
 
 #endif /* _GX_PROCOCOL_ERROR_H_ */
 

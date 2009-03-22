@@ -26,10 +26,13 @@
 #ifndef GX_GCONTEXT_H
 #define GX_GCONTEXT_H
 
+#include <gx/gx-types.h>
+
+#include <gx/generated-code/gx-xcb-dependencies-gen.h>
+#include <gx/generated-code/gx-gcontext-xproto-gen.h>
+
 #include <glib.h>
 #include <glib-object.h>
-
-#include <gx/gx-xcb-dependencies-gen.h>
 
 G_BEGIN_DECLS
 
@@ -40,7 +43,10 @@ G_BEGIN_DECLS
 #define GX_IS_GCONTEXT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GX_TYPE_GCONTEXT))
 #define GX_GCONTEXT_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GX_TYPE_GCONTEXT, GXGContextClass))
 
+#ifndef GX_GCONTEXT_TYPEDEF
 typedef struct _GXGContext	GXGContext;
+#define GX_GCONTEXT_TYPEDEF
+#endif
 typedef struct _GXGContextClass	GXGContextClass;
 typedef struct _GXGContextPrivate GXGContextPrivate;
 
@@ -64,13 +70,16 @@ struct _GXGContextClass
   /* void (* signal) (GXGContext *object); */
 };
 
-GType gx_gcontext_get_type(void);
+GType gx_gcontext_get_type (void);
 
 /* add additional methods here */
-GXGContext *gx_gcontext_new(void);
+GXGContext *gx_gcontext_new (GXConnection *connection);
 
-xcb_gcontext_t
-gx_gc_get_xcb_gcontext (GXGContext *gc);
+GXConnection *
+gx_gcontext_get_connection (GXGContext *self);
+
+guint32
+gx_gcontext_get_xid (GXGContext *self);
 
 G_END_DECLS
 

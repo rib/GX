@@ -487,7 +487,7 @@ gx_screen_get_number (GXScreen *self)
 }
 
 GXWindow *
-gx_screen_get_root_window (GXScreen *self)
+gx_screen_get_root (GXScreen *self)
 {
   return g_object_ref (self->priv->root);
 }

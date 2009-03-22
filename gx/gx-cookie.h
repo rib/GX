@@ -74,7 +74,7 @@ typedef struct _GXConnection GXConnection;
 
 GType gx_cookie_get_type(void);
 
-#include "gx-cookie-gen.h"
+#include <gx/generated-code/gx-cookie-gen.h>
 
 GXCookie *gx_cookie_new (GXConnection *connection,
 			 GXCookieType type,
@@ -94,7 +94,7 @@ void
 gx_cookie_set_reply (GXCookie *self, xcb_generic_reply_t *reply);
 
 
-GXGenericError *
+GXGenericProtocolError *
 gx_cookie_get_error (GXCookie *self);
 
 void

@@ -29,11 +29,13 @@
 #define GX_WINDOW_H
 
 #include <gx/gx-drawable.h>
+#include <gx/gx-event.h>
+//#include <gx/gx-types.h>
+#include <gx/generated-code/gx-xcb-dependencies-gen.h>
+#include <gx/generated-code/extensions/gx-xproto.h>
 
 #include <glib-object.h>
 #include <glib.h>
-
-#include <gx/gx-xcb-dependencies-gen.h>
 
 G_BEGIN_DECLS
 #define GX_WINDOW(obj)		  (G_TYPE_CHECK_INSTANCE_CAST ((obj), GX_TYPE_WINDOW, GXWindow))
@@ -47,7 +49,6 @@ G_BEGIN_DECLS
 typedef struct _GXWindow GXWindow;
 #define GX_WINDOW_TYPEDEF
 #endif
-
 typedef struct __GXWindowClass _GXWindowClass;
 typedef struct _GXWindowPrivate GXWindowPrivate;
 
@@ -90,12 +91,8 @@ xcb_window_t gx_window_get_xcb_window (GXWindow * self);
 GXConnection *
 gx_window_get_connection (GXWindow *self);
 
-
 GXWindow *
-_gx_window_find_from_xid (guint32 xid);
-
-/* TODO - split this into seperate files */
-#include <gx/gx-window-gen.h>
+gx_window_find_from_xid (guint32 xid);
 
 G_END_DECLS
 #endif /* GX_WINDOW_H */

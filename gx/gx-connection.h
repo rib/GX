@@ -24,33 +24,20 @@
 #ifndef GX_CONNECTION_H
 #define GX_CONNECTION_H
 
-#include <gx/gx-cookie.h>
-#include <gx/gx-gcontext.h>
-#include <gx/gx-screen.h>
-#include <gx/gx-types.h>
-#include <gx/gx-mask-value-item.h>
-
 #include <glib.h>
 #include <glib-object.h>
 
-#include <gx/gx-xcb-dependencies-gen.h>
+//#include <gx/gx-cookie.h>
+//#include <gx/gx-gcontext.h>
+//#include <gx/gx-screen.h>
+#include <gx/gx-types.h>
+#include <gx/gx-event.h>
+#include <gx/gx-mask-value-item.h>
+
+#include <gx/generated-code/gx-xcb-dependencies-gen.h>
+#include <gx/generated-code/extensions/gx-xproto.h>
 
 G_BEGIN_DECLS
-
-#ifndef GX_DRAWABLE_TYPEDEF
-typedef struct _GXDrawable          GXDrawable;
-#define GX_DRAWABLE_TYPEDEF
-#endif
-
-#ifndef GX_PIXMAP_TYPEDEF
-typedef struct _GXPixmap             GXPixmap;
-#define GX_PIXMAP_TYPEDEF
-#endif
-
-#ifndef GX_WINDOW_TYPEDEF
-typedef struct _GXWindow            GXWindow;
-#define GX_WINDOW_TYPEDEF
-#endif
 
 #define GX_CONNECTION(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), GX_TYPE_CONNECTION, GXConnection))
 #define GX_TYPE_CONNECTION            (gx_connection_get_type())
@@ -59,9 +46,7 @@ typedef struct _GXWindow            GXWindow;
 #define GX_IS_CONNECTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GX_TYPE_CONNECTION))
 #define GX_CONNECTION_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GX_TYPE_CONNECTION, GXConnectionClass))
 
-/* To handle circular dependency between the gx-connection and gx-cookie
- * headers */
-#if !defined (GX_CONNECTION_TYPEDEF)
+#ifndef GX_CONNECTION_TYPEDEF
 typedef struct _GXConnection GXConnection;
 #define GX_CONNECTION_TYPEDEF
 #endif
@@ -88,9 +73,11 @@ struct _GXConnectionClass
 #endif
 };
 
+#if 0
 #if !defined (GX_COOKIE_TYPEDEF)
 typedef struct _GXCookie GXCookie;
 #define GX_COOKIE_TYPEDEF
+#endif
 #endif
 
 GType gx_connection_get_type(void);
@@ -115,9 +102,7 @@ GXScreen *gx_connection_get_default_screen (GXConnection *self);
 
 GList *gx_connection_get_screens (GXConnection *self);
 
-/* TODO - split this into seperate files */
-#include <gx/gx-connection-gen.h>
-
+GXWindow *gx_connection_get_default_root (GXConnection *self);
 
 G_END_DECLS
 

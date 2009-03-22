@@ -86,7 +86,6 @@ test_cookie_life_cycle (TestGXSimpleFixture *fixture,
 			gconstpointer data)
 {
   GXConnection *connection;
-  GXScreen *screen;
   GXWindow *root;
   GXCookie *cookie0;
   GXCookie *cookie1;
@@ -101,8 +100,7 @@ test_cookie_life_cycle (TestGXSimpleFixture *fixture,
       exit (1);
     }
 
-  screen = gx_connection_get_default_screen (connection);
-  root = gx_screen_get_root_window (screen);
+  root = gx_connection_get_default_root (connection);
 
   cookie0 = gx_window_query_tree_async (root);
   g_object_weak_ref (G_OBJECT (cookie0),
@@ -137,7 +135,6 @@ test_cookie_life_cycle (TestGXSimpleFixture *fixture,
 		     &cookie2_finalized);
 
   g_object_unref (root);
-  g_object_unref (screen);
   g_object_unref (connection);
 
   error |= check_cookies_2_status ();

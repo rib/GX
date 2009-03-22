@@ -24,10 +24,12 @@
  */
 
 #include <gx/gx-drawable.h>
+#include <gx/gx-connection.h>
 #include <gx/gx-gcontext.h>
 #include <gx/gx-protocol-error.h>
 
 #include <string.h>
+#include <stdlib.h>
 
 #define GX_DRAWABLE_GET_PRIVATE(object)(G_TYPE_INSTANCE_GET_PRIVATE ((object), GX_TYPE_DRAWABLE, GXDrawablePrivate))
 
@@ -226,6 +228,4 @@ gx_drawable_get_connection (GXDrawable *self)
 {
   return g_object_ref (self->priv->connection);
 }
-
-#include "gx-drawable-gen.c"
 

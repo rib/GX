@@ -212,3 +212,11 @@ gx_pixmap_finalize (GObject * object)
   /* destruct your object here */
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
+
+GXConnection *
+gx_pixmap_get_connection (GXPixmap *self)
+{
+  return gx_drawable_get_connection (GX_DRAWABLE (self));
+}
+
+

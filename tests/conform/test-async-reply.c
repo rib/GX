@@ -12,7 +12,6 @@ test_async_reply (TestGXSimpleFixture *fixture,
 		  gconstpointer data)
 {
   GXConnection *connection;
-  GXScreen *screen;
   GXWindow *root;
   GXCookie *cookie;
   GXWindowQueryTreeReply *query_tree;
@@ -27,8 +26,7 @@ test_async_reply (TestGXSimpleFixture *fixture,
       exit (1);
     }
 
-  screen = gx_connection_get_default_screen (connection);
-  root = gx_screen_get_root_window (screen);
+  root = gx_connection_get_default_root (connection);
 
   cookie = gx_window_query_tree_async (root);
 
@@ -53,7 +51,6 @@ test_async_reply (TestGXSimpleFixture *fixture,
    * value of some reply is correct */
 
   g_object_unref (root);
-  g_object_unref (screen);
   g_object_unref (connection);
 
   return;

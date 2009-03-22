@@ -271,7 +271,7 @@ PKG_CHECK_MODULES(GXGEN_DEP, [
 AC_SUBST(GXGEN_DEP_CFLAGS)
 AC_SUBST(GXGEN_DEP_LIBS)
 
-GX_PKG_REQUIRES="glib-2.0 >= 2.16 gobject-2.0 xcb $XCB_DEPENDENCIES"
+GX_PKG_REQUIRES="glib-2.0 >= 2.16 gobject-2.0 gmodule-2.0 xcb $XCB_DEPENDENCIES"
 AC_SUBST(GX_PKG_REQUIRES)
 PKG_CHECK_MODULES(GX_DEP, [$GX_PKG_REQUIRES])
 AC_SUBST(GX_DEP_CFLAGS)
@@ -322,7 +322,7 @@ doc/reference/Makefile
 doc/reference/gx/Makefile
 doc/reference/gx/version.xml
 dnl po/Makefile.in
-gx-0.1.pc
+gx-$GX_MAJOR_VERSION.$GX_MINOR_VERSION.pc:gx.pc.in
 )
 
 dnl Configuration output

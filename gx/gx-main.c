@@ -1,5 +1,10 @@
 #include <gx/gx-main.h>
+#include <gx/gx-event.h>
+
 #include <glib.h>
+#include <glib-object.h>
+
+extern GXEventDetails _gx_xproto_event_details[];
 
 static GMainLoop *loop;
 
@@ -21,6 +26,10 @@ gx_init (int *argc, char ***argv)
   g_type_init ();
 
   /* TODO: parse standard arguments */
+
+  g_atexit (_gx_event_details_hash_free);
+
+  gx_event_details_add_extension (_gx_xproto_event_details);
 }
 
 void

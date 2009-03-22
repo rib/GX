@@ -22,6 +22,9 @@ Currently the gobject variant has been renamed _GXWindowClass, but given that
 the GXWindowClass enum will be used quite a bit, I wonder if that might be a
 bit confusing?
 
+GXPixmap
+--------
+The xproto defines an enum that should be named GXPixmap, but that conflicts with the class definition to GXPixmap objects. I changed gxgen to add a Type suffix to all enums; though I'm not sure this is the best solution.
 
 Errors
 ------

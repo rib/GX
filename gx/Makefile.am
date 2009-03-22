@@ -1,4 +1,5 @@
 lib_LTLIBRARIES = libgx-@GX_MAJOR_VERSION@.@GX_MINOR_VERSION@.la
+#noinst_PROGRAMS = gxgen-tests
 
 EXTENSION_XML = xproto.xml
 # FIXME
@@ -55,30 +56,204 @@ endif
 #EXTENSION_XML += xvmc.xml
 
 # Generate this list via:
-# find ./ -iname 'gx-*-gen.*' |cut -d'/' -f2|xargs printf '\t%s \\\n'
+# cd gx/generated-code && \
+# find ./ -maxdepth 1 -iname 'gx-*-gen.*' |cut -d'/' -f2|xargs printf '\t$(GEN_DIR)/%s \\\n'
+GEN_DIR=generated-code
 GENERATED_CODE = \
-        gx-xcb-dependencies-gen.h \
-        gx-protocol-error-codes-gen.h \
-        gx-protocol-error-details-gen.h \
-        gx-event-codes-gen.h \
-        gx-event-details-gen.h \
-        gx-connection-gen.c \
-        gx-connection-gen.h \
-        gx-gcontext-gen.c \
-        gx-gcontext-gen.h \
-        gx-drawable-gen.c \
-        gx-drawable-gen.h \
-        gx-pixmap-gen.c \
-        gx-pixmap-gen.h \
-        gx-window-gen.c \
-        gx-window-gen.h \
-        gx-cookie-gen.h \
-        gx-tests-gen.c
+	$(GEN_DIR)/gx-window-screensaver-gen.c \
+	$(GEN_DIR)/gx-window-xproto-gen.h \
+	$(GEN_DIR)/gx-gcontext-shm-gen.c \
+	$(GEN_DIR)/gx-shape-main-gen.c \
+	$(GEN_DIR)/gx-connection-xevie-gen.h \
+	$(GEN_DIR)/gx-protocol-error-details-gen.c \
+	$(GEN_DIR)/gx-window-dpms-gen.h \
+	$(GEN_DIR)/gx-xevie-event-codes-gen.h \
+	$(GEN_DIR)/gx-connection-sync-gen.c \
+	$(GEN_DIR)/gx-drawable-composite-gen.h \
+	$(GEN_DIR)/gx-shm-event-details-gen.c \
+	$(GEN_DIR)/gx-connection-dpms-gen.c \
+	$(GEN_DIR)/gx-res-event-codes-gen.h \
+	$(GEN_DIR)/gx-connection-screensaver-gen.h \
+	$(GEN_DIR)/gx-window-sync-gen.h \
+	$(GEN_DIR)/gx-gcontext-sync-gen.h \
+	$(GEN_DIR)/gx-pixmap-render-gen.h \
+	$(GEN_DIR)/gx-connection-xevie-gen.c \
+	$(GEN_DIR)/gx-window-shm-gen.c \
+	$(GEN_DIR)/gx-dpms-event-details-gen.c \
+	$(GEN_DIR)/gx-drawable-dpms-gen.h \
+	$(GEN_DIR)/gx-record-event-details-gen.c \
+	$(GEN_DIR)/gx-connection-res-gen.h \
+	$(GEN_DIR)/gx-drawable-record-gen.c \
+	$(GEN_DIR)/gx-xproto-event-codes-gen.h \
+	$(GEN_DIR)/gx-pixmap-res-gen.c \
+	$(GEN_DIR)/gx-gcontext-randr-gen.c \
+	$(GEN_DIR)/gx-shape-event-details-gen.c \
+	$(GEN_DIR)/gx-connection-composite-gen.c \
+	$(GEN_DIR)/gx-gcontext-composite-gen.h \
+	$(GEN_DIR)/gx-protocol-error-codes-gen.h \
+	$(GEN_DIR)/gx-pixmap-composite-gen.c \
+	$(GEN_DIR)/gx-window-xproto-gen.c \
+	$(GEN_DIR)/gx-gcontext-screensaver-gen.c \
+	$(GEN_DIR)/gx-window-record-gen.c \
+	$(GEN_DIR)/gx-connection-shape-gen.h \
+	$(GEN_DIR)/gx-connection-shm-gen.c \
+	$(GEN_DIR)/gx-window-shape-gen.h \
+	$(GEN_DIR)/gx-event-codes-gen.h \
+	$(GEN_DIR)/gx-gcontext-shape-gen.c \
+	$(GEN_DIR)/gx-window-xevie-gen.c \
+	$(GEN_DIR)/gx-drawable-damage-gen.h \
+	$(GEN_DIR)/gx-xcb-dependencies-gen.h \
+	$(GEN_DIR)/gx-drawable-res-gen.c \
+	$(GEN_DIR)/gx-damage-event-details-gen.c \
+	$(GEN_DIR)/gx-connection-record-gen.c \
+	$(GEN_DIR)/gx-drawable-res-gen.h \
+	$(GEN_DIR)/gx-window-render-gen.c \
+	$(GEN_DIR)/gx-pixmap-composite-gen.h \
+	$(GEN_DIR)/gx-connection-screensaver-gen.c \
+	$(GEN_DIR)/gx-connection-xfixes-gen.h \
+	$(GEN_DIR)/gx-gcontext-shm-gen.h \
+	$(GEN_DIR)/gx-res-event-details-gen.c \
+	$(GEN_DIR)/gx-window-dpms-gen.c \
+	$(GEN_DIR)/gx-dpms-main-gen.c \
+	$(GEN_DIR)/gx-pixmap-screensaver-gen.c \
+	$(GEN_DIR)/gx-connection-damage-gen.c \
+	$(GEN_DIR)/gx-composite-main-gen.c \
+	$(GEN_DIR)/gx-xfixes-main-gen.c \
+	$(GEN_DIR)/gx-pixmap-screensaver-gen.h \
+	$(GEN_DIR)/gx-randr-main-gen.c \
+	$(GEN_DIR)/gx-connection-shape-gen.c \
+	$(GEN_DIR)/gx-record-main-gen.c \
+	$(GEN_DIR)/gx-drawable-dpms-gen.c \
+	$(GEN_DIR)/gx-drawable-composite-gen.c \
+	$(GEN_DIR)/gx-gcontext-dpms-gen.c \
+	$(GEN_DIR)/gx-gcontext-res-gen.c \
+	$(GEN_DIR)/gx-pixmap-randr-gen.h \
+	$(GEN_DIR)/gx-drawable-screensaver-gen.h \
+	$(GEN_DIR)/gx-connection-damage-gen.h \
+	$(GEN_DIR)/gx-pixmap-xproto-gen.h \
+	$(GEN_DIR)/gx-window-res-gen.h \
+	$(GEN_DIR)/gx-pixmap-damage-gen.c \
+	$(GEN_DIR)/gx-window-damage-gen.h \
+	$(GEN_DIR)/gx-window-render-gen.h \
+	$(GEN_DIR)/gx-drawable-xfixes-gen.c \
+	$(GEN_DIR)/gx-gcontext-randr-gen.h \
+	$(GEN_DIR)/gx-xproto-event-details-gen.c \
+	$(GEN_DIR)/gx-render-event-codes-gen.h \
+	$(GEN_DIR)/gx-composite-event-codes-gen.h \
+	$(GEN_DIR)/gx-drawable-randr-gen.h \
+	$(GEN_DIR)/gx-drawable-render-gen.c \
+	$(GEN_DIR)/gx-composite-event-details-gen.c \
+	$(GEN_DIR)/gx-drawable-randr-gen.c \
+	$(GEN_DIR)/gx-drawable-record-gen.h \
+	$(GEN_DIR)/gx-randr-event-codes-gen.h \
+	$(GEN_DIR)/gx-dpms-event-codes-gen.h \
+	$(GEN_DIR)/gx-shm-main-gen.c \
+	$(GEN_DIR)/gx-sync-event-codes-gen.h \
+	$(GEN_DIR)/gx-pixmap-res-gen.h \
+	$(GEN_DIR)/gx-window-sync-gen.c \
+	$(GEN_DIR)/gx-screensaver-event-details-gen.c \
+	$(GEN_DIR)/gx-pixmap-shape-gen.h \
+	$(GEN_DIR)/gx-pixmap-shm-gen.c \
+	$(GEN_DIR)/gx-gcontext-damage-gen.c \
+	$(GEN_DIR)/gx-pixmap-randr-gen.c \
+	$(GEN_DIR)/gx-window-damage-gen.c \
+	$(GEN_DIR)/gx-gcontext-record-gen.h \
+	$(GEN_DIR)/gx-res-main-gen.c \
+	$(GEN_DIR)/gx-pixmap-xevie-gen.h \
+	$(GEN_DIR)/gx-record-event-codes-gen.h \
+	$(GEN_DIR)/gx-window-res-gen.c \
+	$(GEN_DIR)/gx-connection-render-gen.h \
+	$(GEN_DIR)/gx-sync-main-gen.c \
+	$(GEN_DIR)/gx-pixmap-record-gen.c \
+	$(GEN_DIR)/gx-gcontext-screensaver-gen.h \
+	$(GEN_DIR)/gx-gcontext-xproto-gen.c \
+	$(GEN_DIR)/gx-pixmap-xevie-gen.c \
+	$(GEN_DIR)/gx-drawable-xproto-gen.c \
+	$(GEN_DIR)/gx-gcontext-render-gen.c \
+	$(GEN_DIR)/gx-drawable-screensaver-gen.c \
+	$(GEN_DIR)/gx-gcontext-damage-gen.h \
+	$(GEN_DIR)/gx-drawable-shm-gen.c \
+	$(GEN_DIR)/gx-gcontext-xevie-gen.h \
+	$(GEN_DIR)/gx-connection-res-gen.c \
+	$(GEN_DIR)/gx-pixmap-damage-gen.h \
+	$(GEN_DIR)/gx-gcontext-render-gen.h \
+	$(GEN_DIR)/gx-gcontext-xproto-gen.h \
+	$(GEN_DIR)/gx-drawable-shm-gen.h \
+	$(GEN_DIR)/gx-window-randr-gen.c \
+	$(GEN_DIR)/gx-connection-sync-gen.h \
+	$(GEN_DIR)/gx-shm-event-codes-gen.h \
+	$(GEN_DIR)/gx-xevie-main-gen.c \
+	$(GEN_DIR)/gx-window-xfixes-gen.h \
+	$(GEN_DIR)/gx-gcontext-composite-gen.c \
+	$(GEN_DIR)/gx-connection-xfixes-gen.c \
+	$(GEN_DIR)/gx-render-main-gen.c \
+	$(GEN_DIR)/gx-drawable-xfixes-gen.h \
+	$(GEN_DIR)/gx-xfixes-event-codes-gen.h \
+	$(GEN_DIR)/gx-drawable-render-gen.h \
+	$(GEN_DIR)/gx-gcontext-xevie-gen.c \
+	$(GEN_DIR)/gx-screensaver-event-codes-gen.h \
+	$(GEN_DIR)/gx-xfixes-event-details-gen.c \
+	$(GEN_DIR)/gx-connection-dpms-gen.h \
+	$(GEN_DIR)/gx-window-record-gen.h \
+	$(GEN_DIR)/gx-drawable-xevie-gen.h \
+	$(GEN_DIR)/gx-gcontext-xfixes-gen.c \
+	$(GEN_DIR)/gx-drawable-sync-gen.c \
+	$(GEN_DIR)/gx-event-details-gen.h \
+	$(GEN_DIR)/gx-connection-composite-gen.h \
+	$(GEN_DIR)/gx-gcontext-record-gen.c \
+	$(GEN_DIR)/gx-drawable-shape-gen.c \
+	$(GEN_DIR)/gx-window-xfixes-gen.c \
+	$(GEN_DIR)/gx-connection-xproto-gen.c \
+	$(GEN_DIR)/gx-window-xevie-gen.h \
+	$(GEN_DIR)/gx-pixmap-dpms-gen.h \
+	$(GEN_DIR)/gx-connection-shm-gen.h \
+	$(GEN_DIR)/gx-connection-render-gen.c \
+	$(GEN_DIR)/gx-damage-event-codes-gen.h \
+	$(GEN_DIR)/gx-drawable-sync-gen.h \
+	$(GEN_DIR)/gx-window-randr-gen.h \
+	$(GEN_DIR)/gx-window-composite-gen.c \
+	$(GEN_DIR)/gx-gcontext-dpms-gen.h \
+	$(GEN_DIR)/gx-connection-randr-gen.c \
+	$(GEN_DIR)/gx-gcontext-xfixes-gen.h \
+	$(GEN_DIR)/gx-pixmap-shape-gen.c \
+	$(GEN_DIR)/gx-connection-xproto-gen.h \
+	$(GEN_DIR)/gx-drawable-damage-gen.c \
+	$(GEN_DIR)/gx-pixmap-record-gen.h \
+	$(GEN_DIR)/gx-window-shm-gen.h \
+	$(GEN_DIR)/gx-pixmap-shm-gen.h \
+	$(GEN_DIR)/gx-pixmap-xfixes-gen.c \
+	$(GEN_DIR)/gx-drawable-xevie-gen.c \
+	$(GEN_DIR)/gx-shape-event-codes-gen.h \
+	$(GEN_DIR)/gx-gcontext-res-gen.h \
+	$(GEN_DIR)/gx-pixmap-render-gen.c \
+	$(GEN_DIR)/gx-xevie-event-details-gen.c \
+	$(GEN_DIR)/gx-randr-event-details-gen.c \
+	$(GEN_DIR)/gx-pixmap-sync-gen.h \
+	$(GEN_DIR)/gx-window-composite-gen.h \
+	$(GEN_DIR)/gx-drawable-shape-gen.h \
+	$(GEN_DIR)/gx-cookie-gen.h \
+	$(GEN_DIR)/gx-pixmap-dpms-gen.c \
+	$(GEN_DIR)/gx-render-event-details-gen.c \
+	$(GEN_DIR)/gx-pixmap-xfixes-gen.h \
+	$(GEN_DIR)/gx-window-shape-gen.c \
+	$(GEN_DIR)/gx-connection-randr-gen.h \
+	$(GEN_DIR)/gx-window-screensaver-gen.h \
+	$(GEN_DIR)/gx-connection-record-gen.h \
+	$(GEN_DIR)/gx-sync-event-details-gen.c \
+	$(GEN_DIR)/gx-damage-main-gen.c \
+	$(GEN_DIR)/gx-gcontext-shape-gen.h \
+	$(GEN_DIR)/gx-screensaver-main-gen.c \
+	$(GEN_DIR)/gx-pixmap-xproto-gen.c \
+	$(GEN_DIR)/gx-gcontext-sync-gen.c \
+	$(GEN_DIR)/gx-drawable-xproto-gen.h \
+	$(GEN_DIR)/gx-pixmap-sync-gen.c
 
-$(GENERATED_CODE): $(EXTENSION_XML) $(top_builddir)/tools/gx-gen
+$(GENERATED_CODE): $(top_builddir)/tools/gx-gen
 	echo "generating $@"
+	-mkdir -p $(GEN_DIR)/extensions
 	$(top_builddir)/tools/gx-gen $(EXTENSION_XML)
-	indent $(GENERATED_CODE)
+	indent generated-code/*{c,h}
+	-rm generated-code/*~
 BUILT_SOURCES = $(GENERATED_CODE)
 
 #.PHONY: generated-code
@@ -111,7 +286,20 @@ libgx_@GX_MAJOR_VERSION@_@GX_MINOR_VERSION@_la_SOURCES = \
 	gx-protocol-error.c \
 	gx-protocol-error.h \
 	gx-event.c \
-	gx-event.h
+	gx-event.h \
+	$(GEN_DIR)/gx-window-xproto-gen.h \
+        $(GEN_DIR)/gx-window-xproto-gen.c \
+        $(GEN_DIR)/gx-pixmap-xproto-gen.h \
+        $(GEN_DIR)/gx-gcontext-xproto-gen.c \
+        $(GEN_DIR)/gx-drawable-xproto-gen.c \
+        $(GEN_DIR)/gx-gcontext-xproto-gen.h \
+        $(GEN_DIR)/gx-connection-xproto-gen.c \
+        $(GEN_DIR)/gx-connection-xproto-gen.h \
+        $(GEN_DIR)/gx-pixmap-xproto-gen.c \
+        $(GEN_DIR)/gx-drawable-xproto-gen.h \
+	$(GEN_DIR)/gx-xproto-event-details-gen.c
+#Note: The above list of xproto files can be got using:
+# find ./ -iname 'gx-*-xproto*' |cut -d'/' -f2|xargs printf '\t$(GEN_DIR)/%s \\\n'
 
 #libgx_@GX_MAJOR_VERSION@_@GX_MINOR_VERSION@_la_LDADD =
 libgx_@GX_MAJOR_VERSION@_@GX_MINOR_VERSION@_la_LDFLAGS = \
@@ -127,6 +315,10 @@ libgx_@GX_MAJOR_VERSION@_@GX_MINOR_VERSION@_la_CPPFLAGS = \
 	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src
 
+#gxgen_tests_SOURCES = generated-code/gxgen-tests-gen.c
+#gxgen_tests_CFLAGS = @EXTRA_CFLAGS@ @GX_DEP_CFLAGS@
+#gxgen_tests_CPPFLAGS = @EXTRA_CPPFLAGS@
+#gxgen_tests_LDADD = @GX_DEP_LIBS@
 
 #EXTRA_DIST =
 
@@ -138,22 +330,27 @@ gxincludedir = \
 	$(includedir)/gx-$(GX_MAJOR_VERSION).$(GX_MINOR_VERSION)
 gxinternalincludedir = \
 	$(includedir)/gx-$(GX_MAJOR_VERSION).$(GX_MINOR_VERSION)/gx
+gxinternalgenincludedir = \
+	$(includedir)/gx-$(GX_MAJOR_VERSION).$(GX_MINOR_VERSION)/gx/generated-code
 
 gxinclude_HEADERS = gx.h
 gxinternalinclude_HEADERS = \
-	gx-types.h \
-	gx-main.h \
-	gx-mask-value-item.h \
-	gx-connection.h \
-	gx-connection-gen.h \
+	gx-event.h \
 	gx-drawable.h \
-	gx-drawable-gen.h \
 	gx-pixmap.h \
-	gx-pixmap-gen.h \
-	gx-window.h \
-	gx-window-gen.h \
+	gx-main.h \
 	gx-cookie.h \
 	gx-screen.h \
+	gx-protocol-error.h \
+	gx-mask-value-item.h \
+	gx-types.h \
 	gx-gcontext.h \
-	gx-gcontext-gen.h
+	gx-window.h \
+	gx-connection.h
+gxinternalgeninclude_HEADERS = \
+	$(GEN_DIR)/gx-window-xproto-gen.h \
+        $(GEN_DIR)/gx-pixmap-xproto-gen.h \
+        $(GEN_DIR)/gx-gcontext-xproto-gen.h \
+        $(GEN_DIR)/gx-connection-xproto-gen.h \
+        $(GEN_DIR)/gx-drawable-xproto-gen.h
 

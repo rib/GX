@@ -175,7 +175,7 @@ gx_window_class_init (_GXWindowClass * klass)	/* Class Initialization */
   /* FIXME - mutex */
   if (!xid_to_windows_map)
     {
-      xid_to_windows_map = g_hash_table_new (g_int_hash, g_int_equal);
+      xid_to_windows_map = g_hash_table_new (g_direct_hash, g_direct_equal);
     }
 
   new_param = g_param_spec_boolean("wrap", /* name */
@@ -278,7 +278,7 @@ gx_window_class_init (_GXWindowClass * klass)	/* Class Initialization */
   new_param = g_param_spec_pointer ("attribute_items", /* name */
 			            "Attribute Mask Value Items",
 			            "An array of attributes as "
-				      "Mask Value Items",
+				    "Mask Value Items",
 				    G_PARAM_WRITABLE
 				    | G_PARAM_CONSTRUCT_ONLY);
   g_object_class_install_property (gobject_class, PROP_ATTRIBUTE_ITEMS,
@@ -289,13 +289,13 @@ gx_window_class_init (_GXWindowClass * klass)	/* Class Initialization */
   gx_window_signals[EVENT_SIGNAL] =
     g_signal_new ("event", /* name */
 		  G_TYPE_FROM_CLASS (klass), /* interface GType */
-		  G_SIGNAL_RUN_LAST, /* signal flags */
+		  G_SIGNAL_RUN_LAST | G_SIGNAL_DETAILED, /* signal flags */
 		  G_STRUCT_OFFSET (_GXWindowClass, event), NULL,
 		  NULL,	/* accumulator data */
-		  g_cclosure_marshal_VOID__VOID, /* c marshaller */
+		  g_cclosure_marshal_VOID__POINTER, /* c marshaller */
 		  G_TYPE_NONE, /* return type */
-		  0 /* number of parameters */
-		  /* vararg, list of param types */
+		  1, /* number of parameters */
+		  G_TYPE_POINTER/* vararg, list of param types */
     );
 
   g_type_class_add_private (klass, sizeof (GXWindowPrivate));
@@ -398,6 +398,42 @@ gx_window_constructor (GType type,
   GXConnection *connection;
   xcb_connection_t *xcb_connection;
   guint32 xid;
+  gboolean is_wrapping_xid = FALSE;
+  int i;
+
+  /* If this window is wrapping an existing XID, then we first look
+   * for an existing window object to return instead */
+
+  for (i = 0; i < n_construct_params; i++)
+    {
+      GObjectConstructParam *construct_param = &construct_params[i];
+      GParamSpec *pspec = construct_param->pspec;
+      if (strcmp (g_param_spec_get_name (pspec), "wrap") == 0)
+	{
+	  is_wrapping_xid = TRUE;
+	  break;
+	}
+    }
+
+  if (is_wrapping_xid)
+    {
+      GXWindow *existing_window;
+
+      for (i = 0; i < n_construct_params; i++)
+	{
+	  GObjectConstructParam *construct_param = &construct_params[i];
+	  GParamSpec *pspec = construct_param->pspec;
+	  if (strcmp (g_param_spec_get_name (pspec), "xid") == 0)
+	    {
+	      xid = g_value_get_uint (construct_param->value);
+	      break;
+	    }
+	}
+#warning "Test XID wrapping code!!!"
+      existing_window = gx_window_find_from_xid (xid);
+      if (existing_window)
+	return G_OBJECT (existing_window);
+    }
 
   object = G_OBJECT_CLASS (parent_class)->constructor (type,
 						       n_construct_params,
@@ -436,25 +472,27 @@ gx_window_constructor (GType type,
 	}
 
       xcb_create_window (
-			 xcb_connection,
-			 self->priv->depth_construct,
-			 drawable->xid,
-			 gx_drawable_get_xid (self->priv->parent_construct),
-			 self->priv->x_construct,
-			 self->priv->y_construct,
-			 self->priv->width_construct,
-			 self->priv->height_construct,
-			 self->priv->border_width_construct,
-			 self->priv->class_construct,
-			 self->priv->visual_construct,
-			 value_mask,
-			 value_list
-      );
+	 xcb_connection,
+	 self->priv->depth_construct,
+	 drawable->xid,
+	 gx_drawable_get_xid (GX_DRAWABLE(self->priv->parent_construct)),
+	 self->priv->x_construct,
+	 self->priv->y_construct,
+	 self->priv->width_construct,
+	 self->priv->height_construct,
+	 self->priv->border_width_construct,
+	 self->priv->class_construct,
+	 self->priv->visual_construct,
+	 value_mask,
+	 value_list);
     }
 
   g_object_unref (connection);
 
-  return self;
+  g_hash_table_insert (xid_to_windows_map,
+		       GUINT_TO_POINTER (drawable->xid),
+		       object);
+  return object;
 }
 
 /* Instantiation wrapper */
@@ -469,7 +507,7 @@ gx_window_new (GXConnection *connection,
 {
   GXMaskValueItem mask_value_items[] = {
     { GX_CW_EVENT_MASK, event_mask },
-    {NULL}
+    {0}
   };
   return GX_WINDOW (g_object_new (gx_window_get_type (),
 				  "connection", connection,
@@ -539,12 +577,11 @@ gx_window_get_connection (GXWindow *self)
 /* Currently only for internal use, this does a lookup for an existing
  * GXWindow that corresponds to the passed xid. */
 GXWindow *
-_gx_window_find_from_xid (guint32 xid)
+gx_window_find_from_xid (guint32 xid)
 {
   /* FIXME - mutex */
-  GXWindow *window = g_hash_table_lookup (xid_to_windows_map, &xid);
+  GXWindow *window = g_hash_table_lookup (xid_to_windows_map,
+					  GUINT_TO_POINTER (xid));
   return window ? g_object_ref (window) : NULL;
 }
-
-#include "gx-window-gen.c"
 
