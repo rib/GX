@@ -106,7 +106,7 @@ static void gx_window_finalize (GObject * self);
 static GXDrawableClass *parent_class = NULL;
 static guint gx_window_signals[LAST_SIGNAL] = { 0 };
 
-GHashTable *xid_to_windows_map = NULL;
+static GHashTable *xid_to_windows_map = NULL;
 
 /* NB: We have to hand code gx_window_get_type because we have to
  * have to name the class as _GXWindowClass so that it does not

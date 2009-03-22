@@ -72,8 +72,12 @@ struct _GXPixmapClass
 
 GType gx_pixmap_get_type(void);
 
-/* add additional methods here */
-GXPixmap *gx_pixmap_new(void);
+GXPixmap *
+gx_pixmap_new (GXConnection *connection,
+	       GXDrawable *reference,
+	       guint16 width,
+	       guint16 height,
+	       guint8 depth);
 
 GXConnection *gx_pixmap_get_connection (GXPixmap *self);
 
