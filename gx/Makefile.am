@@ -65,23 +65,18 @@ GENERATED_CODE = \
 	$(GEN_DIR)/gx-gcontext-shm-gen.c \
 	$(GEN_DIR)/gx-shape-main-gen.c \
 	$(GEN_DIR)/gx-connection-xevie-gen.h \
-	$(GEN_DIR)/gx-protocol-error-details-gen.c \
 	$(GEN_DIR)/gx-window-dpms-gen.h \
-	$(GEN_DIR)/gx-xevie-event-codes-gen.h \
 	$(GEN_DIR)/gx-connection-sync-gen.c \
 	$(GEN_DIR)/gx-drawable-composite-gen.h \
 	$(GEN_DIR)/gx-shm-event-details-gen.c \
 	$(GEN_DIR)/gx-connection-dpms-gen.c \
-	$(GEN_DIR)/gx-res-event-codes-gen.h \
 	$(GEN_DIR)/gx-connection-screensaver-gen.h \
 	$(GEN_DIR)/gx-window-sync-gen.h \
 	$(GEN_DIR)/gx-gcontext-sync-gen.h \
 	$(GEN_DIR)/gx-pixmap-render-gen.h \
 	$(GEN_DIR)/gx-connection-xevie-gen.c \
 	$(GEN_DIR)/gx-window-shm-gen.c \
-	$(GEN_DIR)/gx-dpms-event-details-gen.c \
 	$(GEN_DIR)/gx-drawable-dpms-gen.h \
-	$(GEN_DIR)/gx-record-event-details-gen.c \
 	$(GEN_DIR)/gx-connection-res-gen.h \
 	$(GEN_DIR)/gx-drawable-record-gen.c \
 	$(GEN_DIR)/gx-xproto-event-codes-gen.h \
@@ -90,7 +85,7 @@ GENERATED_CODE = \
 	$(GEN_DIR)/gx-shape-event-details-gen.c \
 	$(GEN_DIR)/gx-connection-composite-gen.c \
 	$(GEN_DIR)/gx-gcontext-composite-gen.h \
-	$(GEN_DIR)/gx-protocol-error-codes-gen.h \
+	$(GEN_DIR)/gx-shm-protocol-error-codes-gen.h \
 	$(GEN_DIR)/gx-pixmap-composite-gen.c \
 	$(GEN_DIR)/gx-window-xproto-gen.c \
 	$(GEN_DIR)/gx-gcontext-screensaver-gen.c \
@@ -98,7 +93,6 @@ GENERATED_CODE = \
 	$(GEN_DIR)/gx-connection-shape-gen.h \
 	$(GEN_DIR)/gx-connection-shm-gen.c \
 	$(GEN_DIR)/gx-window-shape-gen.h \
-	$(GEN_DIR)/gx-event-codes-gen.h \
 	$(GEN_DIR)/gx-gcontext-shape-gen.c \
 	$(GEN_DIR)/gx-window-xevie-gen.c \
 	$(GEN_DIR)/gx-drawable-damage-gen.h \
@@ -111,8 +105,8 @@ GENERATED_CODE = \
 	$(GEN_DIR)/gx-pixmap-composite-gen.h \
 	$(GEN_DIR)/gx-connection-screensaver-gen.c \
 	$(GEN_DIR)/gx-connection-xfixes-gen.h \
+	$(GEN_DIR)/gx-render-protocol-error-codes-gen.h \
 	$(GEN_DIR)/gx-gcontext-shm-gen.h \
-	$(GEN_DIR)/gx-res-event-details-gen.c \
 	$(GEN_DIR)/gx-window-dpms-gen.c \
 	$(GEN_DIR)/gx-dpms-main-gen.c \
 	$(GEN_DIR)/gx-pixmap-screensaver-gen.c \
@@ -138,33 +132,33 @@ GENERATED_CODE = \
 	$(GEN_DIR)/gx-drawable-xfixes-gen.c \
 	$(GEN_DIR)/gx-gcontext-randr-gen.h \
 	$(GEN_DIR)/gx-xproto-event-details-gen.c \
-	$(GEN_DIR)/gx-render-event-codes-gen.h \
-	$(GEN_DIR)/gx-composite-event-codes-gen.h \
+	$(GEN_DIR)/gx-render-protocol-error-details-gen.c \
 	$(GEN_DIR)/gx-drawable-randr-gen.h \
 	$(GEN_DIR)/gx-drawable-render-gen.c \
-	$(GEN_DIR)/gx-composite-event-details-gen.c \
 	$(GEN_DIR)/gx-drawable-randr-gen.c \
 	$(GEN_DIR)/gx-drawable-record-gen.h \
 	$(GEN_DIR)/gx-randr-event-codes-gen.h \
-	$(GEN_DIR)/gx-dpms-event-codes-gen.h \
 	$(GEN_DIR)/gx-shm-main-gen.c \
 	$(GEN_DIR)/gx-sync-event-codes-gen.h \
 	$(GEN_DIR)/gx-pixmap-res-gen.h \
 	$(GEN_DIR)/gx-window-sync-gen.c \
 	$(GEN_DIR)/gx-screensaver-event-details-gen.c \
+	$(GEN_DIR)/gx-damage-protocol-error-codes-gen.h \
 	$(GEN_DIR)/gx-pixmap-shape-gen.h \
 	$(GEN_DIR)/gx-pixmap-shm-gen.c \
 	$(GEN_DIR)/gx-gcontext-damage-gen.c \
 	$(GEN_DIR)/gx-pixmap-randr-gen.c \
 	$(GEN_DIR)/gx-window-damage-gen.c \
 	$(GEN_DIR)/gx-gcontext-record-gen.h \
+	$(GEN_DIR)/gx-xfixes-protocol-error-codes-gen.h \
 	$(GEN_DIR)/gx-res-main-gen.c \
 	$(GEN_DIR)/gx-pixmap-xevie-gen.h \
-	$(GEN_DIR)/gx-record-event-codes-gen.h \
 	$(GEN_DIR)/gx-window-res-gen.c \
+	$(GEN_DIR)/gx-shm-protocol-error-details-gen.c \
 	$(GEN_DIR)/gx-connection-render-gen.h \
 	$(GEN_DIR)/gx-sync-main-gen.c \
 	$(GEN_DIR)/gx-pixmap-record-gen.c \
+	$(GEN_DIR)/gx-sync-protocol-error-details-gen.c \
 	$(GEN_DIR)/gx-gcontext-screensaver-gen.h \
 	$(GEN_DIR)/gx-gcontext-xproto-gen.c \
 	$(GEN_DIR)/gx-pixmap-xevie-gen.c \
@@ -177,11 +171,13 @@ GENERATED_CODE = \
 	$(GEN_DIR)/gx-connection-res-gen.c \
 	$(GEN_DIR)/gx-pixmap-damage-gen.h \
 	$(GEN_DIR)/gx-gcontext-render-gen.h \
+	$(GEN_DIR)/gx-sync-protocol-error-codes-gen.h \
 	$(GEN_DIR)/gx-gcontext-xproto-gen.h \
 	$(GEN_DIR)/gx-drawable-shm-gen.h \
 	$(GEN_DIR)/gx-window-randr-gen.c \
 	$(GEN_DIR)/gx-connection-sync-gen.h \
 	$(GEN_DIR)/gx-shm-event-codes-gen.h \
+	$(GEN_DIR)/gx-record-protocol-error-codes-gen.h \
 	$(GEN_DIR)/gx-xevie-main-gen.c \
 	$(GEN_DIR)/gx-window-xfixes-gen.h \
 	$(GEN_DIR)/gx-gcontext-composite-gen.c \
@@ -198,7 +194,6 @@ GENERATED_CODE = \
 	$(GEN_DIR)/gx-drawable-xevie-gen.h \
 	$(GEN_DIR)/gx-gcontext-xfixes-gen.c \
 	$(GEN_DIR)/gx-drawable-sync-gen.c \
-	$(GEN_DIR)/gx-event-details-gen.h \
 	$(GEN_DIR)/gx-connection-composite-gen.h \
 	$(GEN_DIR)/gx-gcontext-record-gen.c \
 	$(GEN_DIR)/gx-drawable-shape-gen.c \
@@ -206,12 +201,15 @@ GENERATED_CODE = \
 	$(GEN_DIR)/gx-connection-xproto-gen.c \
 	$(GEN_DIR)/gx-window-xevie-gen.h \
 	$(GEN_DIR)/gx-pixmap-dpms-gen.h \
+	$(GEN_DIR)/gx-randr-protocol-error-details-gen.c \
 	$(GEN_DIR)/gx-connection-shm-gen.h \
 	$(GEN_DIR)/gx-connection-render-gen.c \
+	$(GEN_DIR)/gx-damage-protocol-error-details-gen.c \
 	$(GEN_DIR)/gx-damage-event-codes-gen.h \
 	$(GEN_DIR)/gx-drawable-sync-gen.h \
 	$(GEN_DIR)/gx-window-randr-gen.h \
 	$(GEN_DIR)/gx-window-composite-gen.c \
+	$(GEN_DIR)/gx-xfixes-protocol-error-details-gen.c \
 	$(GEN_DIR)/gx-gcontext-dpms-gen.h \
 	$(GEN_DIR)/gx-connection-randr-gen.c \
 	$(GEN_DIR)/gx-gcontext-xfixes-gen.h \
@@ -224,16 +222,18 @@ GENERATED_CODE = \
 	$(GEN_DIR)/gx-pixmap-xfixes-gen.c \
 	$(GEN_DIR)/gx-drawable-xevie-gen.c \
 	$(GEN_DIR)/gx-shape-event-codes-gen.h \
+	$(GEN_DIR)/gx-record-protocol-error-details-gen.c \
+	$(GEN_DIR)/gx-xproto-protocol-error-details-gen.c \
 	$(GEN_DIR)/gx-gcontext-res-gen.h \
 	$(GEN_DIR)/gx-pixmap-render-gen.c \
-	$(GEN_DIR)/gx-xevie-event-details-gen.c \
 	$(GEN_DIR)/gx-randr-event-details-gen.c \
+	$(GEN_DIR)/gx-randr-protocol-error-codes-gen.h \
 	$(GEN_DIR)/gx-pixmap-sync-gen.h \
 	$(GEN_DIR)/gx-window-composite-gen.h \
 	$(GEN_DIR)/gx-drawable-shape-gen.h \
 	$(GEN_DIR)/gx-cookie-gen.h \
+	$(GEN_DIR)/gx-xproto-protocol-error-codes-gen.h \
 	$(GEN_DIR)/gx-pixmap-dpms-gen.c \
-	$(GEN_DIR)/gx-render-event-details-gen.c \
 	$(GEN_DIR)/gx-pixmap-xfixes-gen.h \
 	$(GEN_DIR)/gx-window-shape-gen.c \
 	$(GEN_DIR)/gx-connection-randr-gen.h \

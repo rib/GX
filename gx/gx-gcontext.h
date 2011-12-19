@@ -72,8 +72,10 @@ struct _GXGContextClass
 
 GType gx_gcontext_get_type (void);
 
-/* add additional methods here */
-GXGContext *gx_gcontext_new (GXConnection *connection);
+GXGContext*
+gx_gcontext_new (GXConnection *connection,
+		 GXDrawable *drawable,
+		 GXMaskValueItem *component_values);
 
 GXConnection *
 gx_gcontext_get_connection (GXGContext *self);

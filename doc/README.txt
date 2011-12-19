@@ -45,3 +45,16 @@ about the error then by passing NULL, the function can return immediatly after
 sending the request. If you don't want the blocking but do care about the error
 you should be using the *_async API.
 
+
+Polling for Events, Replys and Errors
+-------------------------------------
+There is a conflict between xcb_poll_for_reply and xcb_blah_reply, since if the
+former is used to retrieve a reply from XCB, then the later wont also retrieve it
+(not actually verified, but seems most likley) therefore we need to wrap how
+we query XCB so that we have an oppertunity to push things into a queue if needs be.
+
+This also raises the question of how we determine that we can free an event/reply
+structure since we don't know if the user will use a gx_blah_reply call or use a signal handler.
+
+If we could force the gx_blah_reply funcs to synchronously fire off any necissary signals then we'd know that the event is finished with, but there is still a problem if we call xcb_poll_for_reply first
+

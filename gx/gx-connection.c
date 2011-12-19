@@ -457,15 +457,6 @@ queue_xcb_next (GXConnection *self)
 
   g_printerr ("queue_xcb_next0\n");
 
-  event = xcb_poll_for_event (xcb_connection);
-  if (event)
-    {
-      g_queue_push_tail (self->priv->events_queue, event);
-      g_printerr ("queue_xcb_next EVENT\n");
-      return TRUE;
-    }
-
-
   /* FIXME: This doesn't seem to be a very nice way to have to deal with
    * replies, but xcb does not currently have a xcb_poll_for_any_reply()
    * function and so you have to pass xcb a specific sequence number.
@@ -496,6 +487,25 @@ queue_xcb_next (GXConnection *self)
 
       return TRUE;
     }
+
+  /* xcb_poll_for_event may also return errors, so we either need to be
+   * sure that they are always picked up by check_for_any_reply_or_error
+   * or we need a way to lookup the corresponding request from the
+   * associated sequence number.
+   *
+   * XXX: I have a feeling it would be better for events to be handled with
+   * a higher priority, than replys.
+   */
+  event = xcb_poll_for_event (xcb_connection);
+  if (event)
+    {
+      g_assert (event->response_type != 0);
+      g_queue_push_tail (self->priv->events_queue, event);
+      g_printerr ("queue_xcb_next EVENT\n");
+      return TRUE;
+    }
+
+
 
   return FALSE;
 }

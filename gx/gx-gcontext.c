@@ -26,6 +26,7 @@
 
 #include <gx/gx-connection.h>
 #include <gx/gx-gcontext.h>
+#include <gx/gx-drawable.h>
 
 #include <string.h>
 
@@ -42,13 +43,18 @@ enum {
 enum {
     PROP_0,
     PROP_CONNECTION,
-    PROP_XID
+    PROP_XID,
+    PROP_DRAWABLE,
+    PROP_COMPONENT_VALUES
 };
 
 struct _GXGContextPrivate
 {
-  GXConnection	 *connection;
-  guint32	  xid;
+  GXConnection	  *connection;
+  guint32	   xid;
+
+  GXDrawable	  *drawable_construct;
+  GXMaskValueItem *component_values_construct;
 };
 
 static void gx_gcontext_get_property(GObject *object,
@@ -61,49 +67,64 @@ static void gx_gcontext_set_property(GObject *object,
 				   GParamSpec *pspec);
 /* static void gx_gcontext_mydoable_interface_init(gpointer interface,
    gpointer data); */
-static void gx_gcontext_init(GXGContext *self);
-static void gx_gcontext_finalize(GObject *self);
+static void gx_gcontext_init (GXGContext *self);
+static void gx_gcontext_constructed (GObject *self);
+static void gx_gcontext_finalize (GObject *self);
 
 
-static GObjectClass *parent_class = NULL;
 /* static guint gx_gcontext_signals[LAST_SIGNAL] = { 0 }; */
 
 G_DEFINE_TYPE(GXGContext, gx_gcontext, G_TYPE_OBJECT);
 
 
 static void
-gx_gcontext_class_init(GXGContextClass *klass) /* Class Initialization */
+gx_gcontext_class_init (GXGContextClass *klass) /* Class Initialization */
 {
-  GObjectClass *gobject_class = G_OBJECT_CLASS(klass);
-  GParamSpec *new_param;
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
+  GParamSpec   *new_param;
 
-  parent_class = g_type_class_peek_parent(klass);
-
+  gobject_class->constructed = gx_gcontext_constructed;
   gobject_class->finalize = gx_gcontext_finalize;
 
   gobject_class->get_property = gx_gcontext_get_property;
   gobject_class->set_property = gx_gcontext_set_property;
 
-  new_param = g_param_spec_object("connection", /* name */
-				  "Connection",	/* nick name */
-				  "Connection",	/* description */
-				  GX_TYPE_CONNECTION,	/* GType */
-				  G_PARAM_READABLE	/* flags */
-				  | G_PARAM_WRITABLE	/* flags */
-				  | G_PARAM_CONSTRUCT_ONLY);
+  new_param = g_param_spec_object ("connection", /* name */
+				   "Connection",	/* nick name */
+				   "Connection",	/* description */
+				   GX_TYPE_CONNECTION,	/* GType */
+				   G_PARAM_READABLE	/* flags */
+				   | G_PARAM_WRITABLE	/* flags */
+				   | G_PARAM_CONSTRUCT_ONLY);
   g_object_class_install_property (gobject_class, PROP_CONNECTION, new_param);
 
-  new_param = g_param_spec_uint("xid", /* name */
-			       "XID",	/* nick name */
-			       "XID to send when creating a window",
-			       0,	/* minimum */
-			       G_MAXUINT32,	/* maximum */
-			       0,	/* default */
-			       G_PARAM_WRITABLE
-			       | G_PARAM_READABLE
-			       | G_PARAM_CONSTRUCT_ONLY);
+  new_param = g_param_spec_uint ("xid", /* name */
+			        "XID",	/* nick name */
+			        "XID to send when creating a window",
+			        0,	/* minimum */
+			        G_MAXUINT32,	/* maximum */
+			        0,	/* default */
+			        G_PARAM_WRITABLE
+			        | G_PARAM_READABLE
+			        | G_PARAM_CONSTRUCT_ONLY);
   g_object_class_install_property (gobject_class, PROP_XID, new_param);
 
+  new_param = g_param_spec_object ("drawable", /* name */
+				   "Drawable",	/* nick name */
+				   "Reference Drawable",	/* description */
+				   GX_TYPE_DRAWABLE,	/* GType */
+				   G_PARAM_WRITABLE	/* flags */
+				   | G_PARAM_CONSTRUCT_ONLY);
+  g_object_class_install_property (gobject_class, PROP_DRAWABLE, new_param);
+
+  new_param = g_param_spec_pointer ("component_values", /* name */
+			            "Component Mask Value Items",
+			            "An array of initial component values as "
+				    "Mask Value Items",
+				    G_PARAM_WRITABLE
+				    | G_PARAM_CONSTRUCT_ONLY);
+  g_object_class_install_property (gobject_class, PROP_COMPONENT_VALUES,
+				   new_param);
 
   /* set up signals */
 #if 0 /* template code */
@@ -122,18 +143,18 @@ gx_gcontext_class_init(GXGContextClass *klass) /* Class Initialization */
     );
 #endif
 
-  g_type_class_add_private(klass, sizeof(GXGContextPrivate));
+  g_type_class_add_private (klass, sizeof(GXGContextPrivate));
 }
 
 static void
-gx_gcontext_get_property(GObject *object,
-		       guint id,
-		       GValue *value,
-		       GParamSpec *pspec)
+gx_gcontext_get_property (GObject *object,
+		          guint id,
+		          GValue *value,
+		          GParamSpec *pspec)
 {
-  GXGContext* self = GX_GCONTEXT(object);
+  GXGContext* self = GX_GCONTEXT (object);
 
-  switch(id)
+  switch (id)
     {
 #if 0 /* template code */
     case PROP_NAME:
@@ -147,20 +168,20 @@ gx_gcontext_get_property(GObject *object,
       g_value_set_uint (value, self->priv->xid);
       break;
     default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID(object, id, pspec);
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, id, pspec);
       break;
     }
 }
 
 static void
-gx_gcontext_set_property(GObject *object,
-		       guint property_id,
-		       const GValue *value,
-		       GParamSpec *pspec)
+gx_gcontext_set_property (GObject *object,
+		          guint property_id,
+		          const GValue *value,
+		          GParamSpec *pspec)
 {
-  GXGContext* self = GX_GCONTEXT(object);
+  GXGContext* self = GX_GCONTEXT (object);
 
-  switch(property_id)
+  switch (property_id)
     {
 #if 0 /* template code */
     case PROP_NAME:
@@ -173,8 +194,14 @@ gx_gcontext_set_property(GObject *object,
     case PROP_XID:
       self->priv->xid = g_value_get_uint (value);
       break;
+    case PROP_DRAWABLE:
+      self->priv->drawable_construct = g_value_get_object (value);
+      break;
+    case PROP_COMPONENT_VALUES:
+      self->priv->component_values_construct = g_value_get_pointer (value);
+      break;
     default:
-      g_warning("gx_gcontext_set_property on unknown property");
+      g_warning ("gx_gcontext_set_property on unknown property");
       return;
     }
 }
@@ -192,31 +219,72 @@ gx_gcontext_mydoable_interface_init(gpointer interface,
 }
 #endif
 
-/* Instance Construction */
 static void
 gx_gcontext_init (GXGContext *self)
 {
-  self->priv = GX_GCONTEXT_GET_PRIVATE(self);
-  /* populate your object here */
+  self->priv = GX_GCONTEXT_GET_PRIVATE (self);
+
+  self->priv->connection = NULL;
+  self->priv->xid = 0;
+  self->priv->drawable_construct = NULL;
+  self->priv->component_values_construct = NULL;
 }
 
-/* Instantiation wrapper */
+static void
+gx_gcontext_constructed (GObject *object)
+{
+  GXGContext *self = GX_GCONTEXT (object);
+  GXConnection *connection = gx_gcontext_get_connection (self);
+  xcb_connection_t *xcb_connection =
+    gx_connection_get_xcb_connection (connection);
+
+  guint32 value_list_len = 0;
+  guint32 *value_list = NULL;
+  guint32 value_mask = 0;
+
+  if (self->priv->component_values_construct)
+    {
+      value_list_len =
+	gx_mask_value_items_get_count (
+	    self->priv->component_values_construct);
+      value_list = alloca (value_list_len * 4);
+
+      gx_mask_value_items_get_list (
+	  self->priv->component_values_construct,
+	  &value_mask,
+	  value_list);
+    }
+
+  xcb_create_gc (xcb_connection,
+		 xcb_generate_id (xcb_connection),
+		 self->priv->drawable_construct,
+		 value_mask,
+		 value_list);
+
+  g_object_unref (connection);
+
+  /* G_OBJECT_CLASS (gx_gcontext_parent_class)->constructed (object); */
+}
+
 GXGContext*
-gx_gcontext_new (GXConnection *connection)
+gx_gcontext_new (GXConnection *connection,
+		 GXDrawable *drawable,
+		 GXMaskValueItem *component_values)
 {
   return GX_GCONTEXT (g_object_new (GX_TYPE_GCONTEXT,
 				    "connection", connection,
+				    "drawable", drawable,
+				    "component_values", component_values,
 				    NULL));
 }
 
-/* Instance Destruction */
 void
 gx_gcontext_finalize (GObject *object)
 {
   /* GXGContext *self = GX_GCONTEXT(object); */
 
   /* destruct your object here */
-  G_OBJECT_CLASS(parent_class)->finalize(object);
+  G_OBJECT_CLASS (gx_gcontext_parent_class)->finalize (object);
 }
 
 GXConnection *
